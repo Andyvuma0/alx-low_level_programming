@@ -1,45 +1,52 @@
+#include "main.h"
 #include <stdlib.h>
-#include <string.h>
+
 /**
- * argstostr - main entry
- * @ac: int input
- * @av: double pointer array
- * Return: 0
+ * argstostr - concatenates all the arguments of a program.
+ * @ac: argument count.
+ * @av: argument vector.
+ *
+ * Return: pointer of an array of char
  */
 char *argstostr(int ac, char **av)
 {
-	int i, z;
-	size_t total_length;
-	char *new_str;
-	int new_str_index;
+	char *aout;
+	int c, i, j, ia;
 
-	if (ac == 0 || av == NULL)
+	if (ac == 0)
+		return (NULL);
+
+	for (c = i = 0; i < ac; i++)
 	{
+		if (av[i] == NULL)
+			return (NULL);
+
+		for (j = 0; av[i][j] != '\0'; j++)
+			c++;
+		c++;
+	}
+
+	aout = malloc((c + 1) * sizeof(char));
+
+	if (aout == NULL)
+	{
+		free(aout);
 		return (NULL);
 	}
 
-	total_length = 0;
-	for (i = 0; i < ac; i++)
+	for (i = j = ia = 0; ia < c; j++, ia++)
 	{
-		total_length += strlen(av[i]) + 1;
+		if (av[i][j] == '\0')
+		{
+			aout[ia] = '\n';
+			i++;
+			ia++;
+			j = 0;
+		}
+		if (ia < c - 1)
+			aout[ia] = av[i][j];
 	}
+	aout[ia] = '\0';
 
-	new_str = malloc(total_length * sizeof(char));
-	if (new_str == NULL)
-	{
-		return (NULL);
-	}
-
-	new_str_index = 0;
-	for (z = 0; z < ac; z++)
-	{
-		strcpy(&new_str[new_str_index], av[z]);
-		new_str_index += strlen(av[z]);
-		new_str[new_str_index] = '\n';
-		new_str_index++;
-	}
-
-	new_str[new_str_index] = '\0';
-
-	return (new_str);
+	return (aout);
 }
